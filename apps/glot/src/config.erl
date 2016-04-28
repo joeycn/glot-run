@@ -89,8 +89,7 @@ default_docker_config() ->
         <<"OpenStdin">> => true,
         <<"StdinOnce">> => true,
         <<"Env">> => null,
-        <<"Cmd">> => [<<"/home/glot/runner">>],
-        <<"Entrypoint">> => <<"">>,
+        <<"Entrypoint">> => <<""/home/glot/runner"">>,
         <<"Image">> => <<"">>,
         <<"Volumes">> => #{},
         <<"WorkingDir">> => <<"">>,
@@ -125,7 +124,7 @@ default_docker_config() ->
             <<"Devices">> => [],
             <<"Ulimits">> => [
                 #{<<"Name">> => <<"nofile">>, <<"Soft">> => 90, <<"Hard">> => 100},
-                #{<<"Name">> => <<"nproc">>, <<"Soft">> => 90, <<"Hard">> => 100}
+                #{<<"Name">> => <<"nproc">>, <<"Soft">> => 512, <<"Hard">> => 1024}
             ]
         }
     }.
