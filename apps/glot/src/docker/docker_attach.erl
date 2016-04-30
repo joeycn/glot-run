@@ -47,7 +47,7 @@ ready({attach, ContainerId}, From, State) ->
     {ok, Socket} = gen_tcp:connect(Host, Port, [
         binary, {active, true}, {packet, line}, {keepalive, true}
     ]),
-    gen_tcp:send(Socket, raw_container_attach_request(ContainerId)),
+    gen_tcp:send(Socket, raw_container_attach_request(Host, ContainerId)),
     NewState = State#state{socket=Socket, callback_pid=From},
     log:event(<<"Transition to recv_http state">>),
     {next_state, recv_http, NewState}.
@@ -123,8 +123,11 @@ raw_container_attach_request(ContainerId) ->
     Url = docker_url:container_attach(<<>>, ContainerId, [
         {stdin, true}, {stdout, true}, {stream, true}
     ]),
+    HostBin = list_to_binary(Host),
     [
         <<"POST ", Url/binary, " HTTP/1.1\r\n">>,
+        <<"Host: ", HostBin/binary, "\r\n">>,
+        <<"Content-Length: 0\r\n">>,
         <<"Content-Type: application/vnd.docker.raw-stream\r\n">>,
         <<"Connection: Upgrade\r\n">>,
         <<"Upgrade: tcp\r\n">>,
